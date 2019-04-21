@@ -11,6 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('front_end.book.index');
-});
+Route::get('/', 'BookController@index');
+
+Route::post('/books', 'BookController@store')
+    ->name('books.store');

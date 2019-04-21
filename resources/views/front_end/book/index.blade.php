@@ -22,22 +22,16 @@
                     </thead>
 
                     <tbody>
-                    <tr>
-                        <td>Tiger Nixon</td>
-                        <td>System Architect</td>
-                        <td>
-                            <button type="button" class="btn btn-success btn-sm">Edit</button>
-                            <button type="button" class="btn btn-danger btn-sm">Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Garrett Winters</td>
-                        <td>Accountant</td>
-                        <td>
-                            <button type="button" class="btn btn-success btn-sm">Edit</button>
-                            <button type="button" class="btn btn-danger btn-sm">Delete</button>
-                        </td>
-                    </tr>
+                        @foreach($books as $book)
+                            <tr>
+                                <td>{{ $book->title }}</td>
+                                <td>{{ $book->author_name }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-success btn-sm">Edit</button>
+                                    <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
 
@@ -68,7 +62,7 @@
     <script>
         $(document).ready(function () {
             $('#example').DataTable({
-                "bPaginate": false,
+                // "bPaginate": false,
                 "bLengthChange": false,
                 "bFilter": true,
                 "bInfo": false,
