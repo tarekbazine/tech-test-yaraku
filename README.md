@@ -2,14 +2,18 @@
 My technical test for Yaraku Inc.
 
 ### Setup
+- DB
+        
+        php artisan migrate --seed
+        php artisan migrate:refresh --seed
         
 - php packages
         
-        `composer install`
+        composer install
         
 - css & js
         
-        `cd public && yarn install` (or npm)
+        cd public && yarn install (yarn or npm)
 
 
 ### Specs
