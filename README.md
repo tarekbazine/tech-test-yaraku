@@ -1,5 +1,16 @@
-# tech-test-yaraku
+### Tech-test Yaraku inc
 My technical test for Yaraku Inc.
+
+### Setup
+        
+- php packages
+        
+        `composer install`
+        
+- css & js
+        
+        `cd public && yarn install` (or npm)
+
 
 ### Specs
 - The attached image file is an example but feel free to solve the tasks in whatever manner you think is best and with the layout you consider to be the best.
