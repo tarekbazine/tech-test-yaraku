@@ -10,9 +10,29 @@
                 @include('front_end.book._partials.create_from')
 
 
-                <h3 class="mt-5">Books list</h3>
+                <div class="row mt-5">
+                    <div class="col-md-8">
+                        <h3>Books list</h3>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="dropdown float-right">
+                            <button class="btn btn-secondary dropdown-toggle btn-sm" type="button"
+                                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                Export data
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" data-toggle="modal" data-target="#export_modal"
+                                   data-type="csv" data-modaltitle="Export CSV" href="#">CSV</a>
 
-                <table id="example" class="table table-striped table-bordered" style="width:100%">
+                                <a class="dropdown-item" data-toggle="modal" data-target="#export_modal"
+                                   data-type="xml" data-modaltitle="Export XML" href="#">XML</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <table id="books_list" class="table table-striped table-bordered" style="width:100%">
                     <thead>
                     <tr>
                         <th>Title</th>
@@ -22,16 +42,16 @@
                     </thead>
 
                     <tbody>
-                        @foreach($books as $book)
-                            <tr>
-                                <td>{{ $book->title }}</td>
-                                <td>{{ $book->author_name }}</td>
-                                <td>
-                                    <button type="button" class="btn btn-success btn-sm">Edit</button>
-                                    <button type="button" class="btn btn-danger btn-sm">Delete</button>
-                                </td>
-                            </tr>
-                        @endforeach
+                    @foreach($books as $book)
+                        <tr>
+                            <td>{{ $book->title }}</td>
+                            <td>{{ $book->author_name }}</td>
+                            <td>
+                                <button type="button" class="btn btn-success btn-sm">Edit</button>
+                                <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                            </td>
+                        </tr>
+                    @endforeach
                     </tbody>
                 </table>
 
@@ -39,12 +59,15 @@
             </div>
         </div>
     </div>
+
+    @include('front_end.book._partials.export_modal')
 @endsection
 
 @section('css')
     <link href="{{ asset('/node_modules/bootstrap/dist/css/bootstrap.min.css') }}"
           rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.css"/>
+
 @endsection
 
 @section('js')
@@ -58,6 +81,14 @@
     <script src="{{ asset('/node_modules/bootstrap/dist/js/bootstrap.min.js') }}"></script>
 
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.js"></script>
+
+
+
+    {{--<script type="text/javascript" src="https://unpkg.com/xlsx@0.14.2/dist/xlsx.core.min.js"></script>--}}
+    <script src="https://cdn.jsdelivr.net/npm/file-saverjs@1.3.6/FileSaver.min.js"></script>
+
+    <script type="text/javascript" src="https://unpkg.com/tableexport@5.2.0/dist/js/tableexport.min.js"></script>
+
 
     <script>
         $(document).ready(function () {
@@ -80,5 +111,93 @@
                 ]
             });
         });
+
+
+        var bookListTable = $("table");
+
+        function exportTableToCsv(ignoredCols) {
+
+            var table = bookListTable.tableExport({
+                headers: true,                      // (Boolean), display table headers (th or td elements) in the <thead>, (default: true)
+                footers: false,                      // (Boolean), display table footers (th or td elements) in the <tfoot>, (default: false)
+                formats: ["csv"],    // (String[]), filetype(s) for the export, (default: ['xlsx', 'csv', 'txt'])
+                filename: "id",                     // (id, String), filename for the downloaded file, (default: 'id')
+                // bootstrap: false,                   // (Boolean), style buttons using bootstrap, (default: true)
+                exportButtons: false,                // (Boolean), automatically generate the built-in export buttons for each of the specified formats (default: true)
+                // position: "bottom",                 // (top, bottom), position of the caption element relative to table, (default: 'bottom')
+                ignoreRows: null,                   // (Number, Number[]), row indices to exclude from the exported file(s) (default: null)
+                ignoreCols: ignoredCols,                   // (Number, Number[]), column indices to exclude from the exported file(s) (default: null)
+                trimWhitespace: true,               // (Boolean), remove all leading/trailing newlines, spaces, and tabs from cell text in the exported file(s) (default: false)
+                RTL: false,                         // (Boolean), set direction of the worksheet to right-to-left (default: false)
+                sheetname: "books-list"                     // (id, String), sheet name for the exported spreadsheet, (default: 'id')
+            });
+
+            var data_table = table.getExportData().books_list.csv;
+            console.log(data_table)
+            table.export2file(
+                data_table.data,
+                data_table.mimeType,
+                data_table.filename,
+                data_table.fileExtension,
+                data_table.merges,
+                data_table.RTL,
+                data_table.sheetname
+            )
+
+            return true
+        }
+
+        var exportModal = $('#export_modal')
+        exportModal.on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var modaltitle = button.data('modaltitle') // Extract info from data-* attributes
+            var export_type = button.data('type')
+            // console.log(export_type)
+            var modal = $(this)
+            modal.find('.modal-title').text(modaltitle)
+            // console.log(modal.find('#export-btn'))
+            modal.find('#export-btn').data('type', export_type)
+        })
+
+        var exportBtn = $('#export-btn')
+        exportBtn.click(function (event) {
+            var button = $(this)
+            // console.log('me',$(this))
+            var export_type = button.data('type')
+
+            console.log(export_type)
+
+            button.attr('disabled', 'disabled')
+            button.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Exporting...')
+
+            if ('csv' === export_type) {
+
+                var ignoredCols = exportModal.find('input[name="radio_export"]:checked')
+                    .data('ignored_cols').toString()
+                ignoredCols = ignoredCols.split(',')
+
+                ignoredCols = $.map(ignoredCols, function (i) {
+                    var n = parseInt(i)
+                    if (isNaN(n)) {
+                        throw new Error(" Err in radio export btns ! data-ignored_cols should but arr int");
+                    }
+                    return n
+                });
+
+                console.log(ignoredCols)
+                exportTableToCsv(ignoredCols)
+
+            } else if ('xml' === export_type) {
+
+            }
+
+            exportModal.modal('hide')
+        });
+
+        exportModal.on('hidden.bs.modal', function (event) {
+            exportBtn.removeAttr('disabled')
+            exportBtn.html('Export')
+        })
+
     </script>
 @endsection

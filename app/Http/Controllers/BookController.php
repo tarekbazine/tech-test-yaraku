@@ -36,4 +36,17 @@ class BookController extends Controller
 
         //
     }
+
+    /**
+     * Delete a book.
+     *
+     * @param  Request $request
+     * @return Response
+     */
+    public function destroy(Request $request)
+    {
+        $name = $request->name;
+
+        //
+    }
 }

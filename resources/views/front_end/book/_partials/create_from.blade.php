@@ -1,6 +1,6 @@
 <form action="" method="POST"
       class="px-3 pt-5 pb-2"
-      style="background-color: lightgray;border-radius: 10px">
+      style="background-color: #f2f2f2;border-radius: 3px">
 
     {{ csrf_field() }}
 

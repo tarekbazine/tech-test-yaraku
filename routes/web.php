@@ -15,3 +15,6 @@ Route::get('/', 'BookController@index');
 
 Route::post('/books', 'BookController@store')
     ->name('books.store');
+
+Route::post('/books/{book}', 'BookController@destroy')
+    ->name('books.destroy');
