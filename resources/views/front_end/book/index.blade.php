@@ -89,7 +89,8 @@
 
     <script type="text/javascript" src="https://unpkg.com/tableexport@5.2.0/dist/js/tableexport.min.js"></script>
 
-
+    {{--<script src="https://cdn.jsdelivr.net/npm/xml-js@1.6.11/lib/index.min.js"></script>--}}
+    <script src="https://cdn.jsdelivr.net/npm/xml-js@1.6.11/dist/xml-js.min.js"></script>
     <script>
         $(document).ready(function () {
             $('#example').DataTable({
@@ -133,7 +134,7 @@
             });
 
             var data_table = table.getExportData().books_list.csv;
-            console.log(data_table)
+            // console.log(data_table)
             table.export2file(
                 data_table.data,
                 data_table.mimeType,
@@ -146,6 +147,51 @@
 
             return true
         }
+
+
+        function exportTableToXML(selectedCols) {
+            var colTitles = $.map(bookListTable.find('thead th'), function (i) {
+                return $(i).text()
+            });
+
+            var data = {
+                "_declaration": {"_attributes": {"version": "1.0", "encoding": "utf-8"}},
+                bookList: {
+                    book: []
+                }
+            }
+
+            bookListTable.find('tbody > tr').each(function () {
+                // console.log($(this), $(this).find('td'))
+                var rowData = $.map($(this).find('td'), function (i) {
+                    // console.log('i', i)
+                    return $(i).text()
+                });
+
+                // console.log(rowData)
+
+                var bookObj = {}
+
+                $.each(selectedCols, function (index, value) {
+                    bookObj[colTitles[value]] = {
+                        "_text": rowData[value]
+                    }
+                })
+
+                data.bookList.book.push(bookObj)
+            });
+
+            var options = {compact: true, ignoreComment: true, spaces: 4};
+
+            trigerFileDownload(js2xml(data, options), 'book-list')
+
+            return true;
+        }
+
+        // ddd = exportTableToXML([0, 1])
+        // var options = {compact: true, ignoreComment: true, spaces: 4};
+        // console.log(js2xml(ddd, options))
+
 
         var exportModal = $('#export_modal')
         exportModal.on('show.bs.modal', function (event) {
@@ -165,7 +211,7 @@
             // console.log('me',$(this))
             var export_type = button.data('type')
 
-            console.log(export_type)
+            // console.log(export_type)
 
             button.attr('disabled', 'disabled')
             button.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Exporting...')
@@ -174,21 +220,22 @@
 
                 var ignoredCols = exportModal.find('input[name="radio_export"]:checked')
                     .data('ignored_cols').toString()
-                ignoredCols = ignoredCols.split(',')
 
-                ignoredCols = $.map(ignoredCols, function (i) {
-                    var n = parseInt(i)
-                    if (isNaN(n)) {
-                        throw new Error(" Err in radio export btns ! data-ignored_cols should but arr int");
-                    }
-                    return n
-                });
+                ignoredCols = parseStringToArray(ignoredCols)
 
                 console.log(ignoredCols)
                 exportTableToCsv(ignoredCols)
 
             } else if ('xml' === export_type) {
 
+                var selectedCols = exportModal.find('input[name="radio_export"]:checked')
+                    .val().toString()
+
+                console.log(selectedCols)
+
+                selectedCols = parseStringToArray(selectedCols)
+                console.log(selectedCols)
+                exportTableToXML(selectedCols)
             }
 
             exportModal.modal('hide')
@@ -198,6 +245,30 @@
             exportBtn.removeAttr('disabled')
             exportBtn.html('Export')
         })
+
+
+        function parseStringToArray(str) {
+            var arr = str.split(',')
+
+            arr = $.map(arr, function (i) {
+                var n = parseInt(i)
+                if (isNaN(n)) {
+                    throw new Error(" Err in radio export btns ! data-ignored_cols should but arr int");
+                }
+                return n
+            });
+            return arr
+        }
+
+        function trigerFileDownload(xml, fileName) {
+            var uri = 'data:text/xml;charset=utf-8,' + encodeURIComponent(xml);
+            var download_link = document.createElement('a');
+            download_link.href = uri;
+            download_link.download = fileName + ".xml";
+            document.body.appendChild(download_link);
+            download_link.click();
+            document.body.removeChild(download_link);
+        }
 
     </script>
 @endsection
