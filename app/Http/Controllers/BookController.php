@@ -43,7 +43,7 @@ class BookController extends Controller
                 'author_name' => $author_name,
             ]);
 
-            flash()->success('Book Added');
+            flash()->success('Book Added [ Title: ' . $title . ' ]');
 
         } catch (\Exception $e) {
 

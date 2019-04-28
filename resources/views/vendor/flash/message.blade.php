@@ -10,8 +10,7 @@
     position: fixed;
     width: 100%;">
 
-            <div style="width: 50%;margin-left: 25%;
-            border-color: #000000;border-width: 2px;"
+            <div style="width: 50%;margin-left: 25%; top: 1em;border-width: 2px;"
                  class="alert
                         alert-{{ $message['level'] }}
                  {{ $message['important'] ? 'alert-important' : '' }}"
