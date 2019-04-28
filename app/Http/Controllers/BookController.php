@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreBook;
 use App\Models\Book;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -30,11 +31,28 @@ class BookController extends Controller
      * @param  Request $request
      * @return Response
      */
-    public function store(Request $request)
+    public function store(StoreBook $request)
     {
-        $name = $request->name;
+        $title = $request->input('title');
+        $author_name = $request->input('author_name');
 
-        //
+        try {
+
+            Book::create([
+                'title' => $title,
+                'author_name' => $author_name,
+            ]);
+
+            flash()->success('Book Added');
+
+        } catch (\Exception $e) {
+
+            flash()->error('Book NOT Added ! Error');
+
+        }
+
+
+        return redirect('/');
     }
 
     /**

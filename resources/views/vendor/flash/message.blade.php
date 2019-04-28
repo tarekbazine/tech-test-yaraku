@@ -6,20 +6,28 @@
             'body'       => $message['message']
         ])
     @else
-        <div class="alert
-                    alert-{{ $message['level'] }}
-                    {{ $message['important'] ? 'alert-important' : '' }}"
-                    role="alert"
-        >
-            @if ($message['important'])
+        <div style="top: 0;
+    position: fixed;
+    width: 100%;">
+
+            <div style="width: 50%;margin-left: 25%;
+            border-color: #000000;border-width: 2px;"
+                 class="alert
+                        alert-{{ $message['level'] }}
+                 {{ $message['important'] ? 'alert-important' : '' }}"
+                 role="alert"
+            >
+                {{--            @if ($message['important'])--}}
                 <button type="button"
                         class="close"
                         data-dismiss="alert"
                         aria-hidden="true"
                 >&times;</button>
-            @endif
+            {{--@endif--}}
 
-            {!! $message['message'] !!}
+                {!! $message['message'] !!}
+            </div>
+
         </div>
     @endif
 @endforeach

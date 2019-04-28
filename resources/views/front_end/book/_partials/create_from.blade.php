@@ -1,4 +1,5 @@
-<form action="" method="POST"
+<form id="store-book-form"
+      action="{{ route('books.store') }}" method="POST"
       class="px-3 pt-5 pb-2"
       style="background-color: #f2f2f2;border-radius: 3px">
 
@@ -7,13 +8,13 @@
     <div class="form-group row">
         <label class="col-sm-2 col-form-label text-right">Title<span style="color: red">*</span></label>
         <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="Title">
+            <input name="title" type="text" class="form-control" placeholder="Title">
         </div>
     </div>
     <div class="form-group row">
         <label class="col-sm-2 col-form-label text-right">Author<span style="color: red">*</span></label>
         <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="Author">
+            <input name="author_name" type="text" class="form-control" placeholder="Author">
         </div>
     </div>
 
