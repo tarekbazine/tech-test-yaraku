@@ -47,8 +47,18 @@
                             <td>{{ $book->title }}</td>
                             <td>{{ $book->author_name }}</td>
                             <td>
-                                <button type="button" class="btn btn-success btn-sm">Edit</button>
-                                <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                                <button type="button"
+                                        data-book_id="{{ $book->id }}"
+                                        class="btn btn-success btn-sm">
+                                    Edit
+                                </button>
+                                <button type="button" data-book_id="{{ $book->id }}"
+                                        data-toggle="modal"
+                                        data-book_title="{{ $book->title }}"
+                                        data-target="#delete_modal"
+                                        class="btn btn-danger btn-sm">
+                                    Delete
+                                </button>
                             </td>
                         </tr>
                     @endforeach
@@ -60,7 +70,10 @@
         </div>
     </div>
 
+    @include('front_end.book._partials.delete_modal')
+
     @include('front_end.book._partials.export_modal')
+
     @include('vendor.flash.message')
 @endsection
 
@@ -77,8 +90,8 @@
             integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg="
             crossorigin="anonymous"></script>
     {{--<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"--}}
-            {{--integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"--}}
-            {{--crossorigin="anonymous"></script>--}}
+    {{--integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"--}}
+    {{--crossorigin="anonymous"></script>--}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
             integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
             crossorigin="anonymous"></script>
@@ -274,6 +287,23 @@
             download_link.click();
             document.body.removeChild(download_link);
         }
+
+
+        //delete js
+        var deleteBookModal = $('#delete_modal')
+        var deleteBookActionUrl = "{!! route('books.destroy',['book'=>"#"]) !!}"
+        deleteBookModal.on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var bookTitle = button.data('book_title') // Extract info from data-* attributes
+            var bookId = button.data('book_id') // Extract info from data-* attributes
+            // console.log(bookTitle)
+            var modal = $(this)
+            modal.find('mark').text(bookTitle)
+            // console.log(modal.find('#export-btn'))
+            modal.find('#delete-form').attr('action', deleteBookActionUrl.replace("#", bookId))
+        })
+
+
 
     </script>
 

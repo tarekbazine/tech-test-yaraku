@@ -61,10 +61,21 @@ class BookController extends Controller
      * @param  Request $request
      * @return Response
      */
-    public function destroy(Request $request)
+    public function destroy(Book $book)
     {
-        $name = $request->name;
+        try {
 
-        //
+            $book->delete();
+
+            flash()->success('Book Deleted [ Title: ' . $book->title . ' ]');
+
+        } catch (\Exception $e) {
+
+            flash()->error('Book NOT Deleted ! Error');
+
+        }
+
+
+        return redirect('/');
     }
 }
