@@ -18,3 +18,6 @@ Route::post('/books', 'BookController@store')
 
 Route::post('/books/{book}/destroy', 'BookController@destroy')
     ->name('books.destroy');
+
+Route::post('/books/{book}/update_author', 'BookController@updateAuthor')
+    ->name('books.update_author');

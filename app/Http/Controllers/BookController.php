@@ -6,6 +6,7 @@ use App\Http\Requests\StoreBook;
 use App\Models\Book;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class BookController extends Controller
 {
@@ -72,6 +73,45 @@ class BookController extends Controller
         } catch (\Exception $e) {
 
             flash()->error('Book NOT Deleted ! Error');
+
+        }
+
+
+        return redirect('/');
+    }
+
+
+    /**
+     * Delete a book.
+     *
+     * @param  Request $request
+     * @return Response
+     */
+    public function updateAuthor(Book $book, Request $request)
+    {
+        $validator = Validator::make([
+            'author_name' => $request->input('author_name'),
+        ], [
+            'author_name' => (new StoreBook)->rules()['author_name'],
+        ]);
+
+        if ($validator->fails()) {
+            flash()->error('Book author NOT updated, ' . $validator->messages()->first());
+            return redirect('/');
+        }
+
+        try {
+
+            $author_name = $request->input('author_name');
+
+            $book->author_name = $author_name;
+            $book->save();
+
+            flash()->success('Book author updated [ Title: ' . $book->title . ' ]');
+
+        } catch (\Exception $e) {
+
+            flash()->error('Book author NOT updated ! Error');
 
         }
 

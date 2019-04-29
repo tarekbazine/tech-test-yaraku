@@ -43,18 +43,21 @@
 
                     <tbody>
                     @foreach($books as $book)
-                        <tr>
+                        <tr data-book_id="{{ $book->id }}"
+                            data-book_title="{{ $book->title }}"
+                            data-book_author_name="{{ $book->author_name }}"
+                        >
                             <td>{{ $book->title }}</td>
                             <td>{{ $book->author_name }}</td>
                             <td>
                                 <button type="button"
-                                        data-book_id="{{ $book->id }}"
+                                        data-toggle="modal"
+                                        data-target="#edit_author_modal"
                                         class="btn btn-success btn-sm">
                                     Edit
                                 </button>
-                                <button type="button" data-book_id="{{ $book->id }}"
+                                <button type="button"
                                         data-toggle="modal"
-                                        data-book_title="{{ $book->title }}"
                                         data-target="#delete_modal"
                                         class="btn btn-danger btn-sm">
                                     Delete
@@ -69,6 +72,8 @@
             </div>
         </div>
     </div>
+
+    @include('front_end.book._partials.edit_author_modal')
 
     @include('front_end.book._partials.delete_modal')
 
@@ -294,8 +299,9 @@
         var deleteBookActionUrl = "{!! route('books.destroy',['book'=>"#"]) !!}"
         deleteBookModal.on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget) // Button that triggered the modal
-            var bookTitle = button.data('book_title') // Extract info from data-* attributes
-            var bookId = button.data('book_id') // Extract info from data-* attributes
+            var dataSource = button.closest('tr')
+            var bookTitle = dataSource.data('book_title') // Extract info from data-* attributes
+            var bookId = dataSource.data('book_id') // Extract info from data-* attributes
             // console.log(bookTitle)
             var modal = $(this)
             modal.find('mark').text(bookTitle)
@@ -303,6 +309,30 @@
             modal.find('#delete-form').attr('action', deleteBookActionUrl.replace("#", bookId))
         })
 
+
+        //edit js
+        var editAuthorBookModal = $('#edit_author_modal')
+        var editAuthorBookActionUrl = "{!! route('books.update_author',['book'=>"#"]) !!}"
+        editAuthorBookModal.on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var dataSource = button.closest('tr')
+            var bookAuthorName = dataSource.data('book_author_name') // Extract info from data-* attributes
+            var bookTitle = dataSource.data('book_title') // Extract info from data-* attributes
+            var bookId = dataSource.data('book_id') // Extract info from data-* attributes
+            // console.log(bookTitle)
+            var modal = $(this)
+            modal.find('mark').text(bookTitle)
+            console.log(modal.find('mark'))
+            modal.find('input[name="author_name"]').val(bookAuthorName)
+            // console.log(modal.find('#export-btn'))
+            modal.find('#edit_author-form').attr('action', editAuthorBookActionUrl.replace("#", bookId))
+
+        })
+        editAuthorBookModal.on('shown.bs.modal', function (event) {
+            var modal = $(this)
+
+            modal.find('input[name="author_name"]')[0].focus()
+        })
 
 
     </script>
