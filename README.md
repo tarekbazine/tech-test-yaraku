@@ -1,10 +1,11 @@
-### Tech-test Yaraku inc
+### Tech-test [Yaraku inc]
 My technical test for Yaraku Inc.
 
 ### Setup
 - DB
         
         php artisan migrate --seed
+        (or)
         php artisan migrate:refresh --seed
         
 - php packages
