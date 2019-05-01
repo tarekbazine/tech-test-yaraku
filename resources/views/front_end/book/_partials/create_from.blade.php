@@ -1,7 +1,6 @@
 <form id="store-book-form"
       action="{{ route('books.store') }}" method="POST"
-      class="px-3 pt-5 pb-2"
-      style="background-color: #f2f2f2;border-radius: 3px">
+      class="px-3 pt-5 pb-2 add-book__form">
 
     {{ csrf_field() }}
 
